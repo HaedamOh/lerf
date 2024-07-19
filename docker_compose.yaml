@@ -1,0 +1,21 @@
+services:
+  lerf:
+    container_name: lerf_container
+    build:
+      dockerfile: Dockerfile
+      args:
+        - UID=${UID:-1007}
+        - GID=${GID:-1007}
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    runtime: nvidia
+    network_mode: "host"
+    tty: true
+    volumes:
+        # - /home/haedamoh/:/home/docker_dev/
+        - /home/haedamoh/git/lerf/:/home/docker_dev/lerf/
+        - /home/haedamoh/.netrc:/home/docker_dev/.netrc
+        - /home/haedamoh/.git:/home/docker_dev/.git
+    # command: python /home/docker_dev/silvr/train.py
+
