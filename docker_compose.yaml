@@ -17,5 +17,7 @@ services:
         - /home/haedamoh/git/lerf/:/home/docker_dev/lerf/
         - /home/haedamoh/.netrc:/home/docker_dev/.netrc
         - /home/haedamoh/.git:/home/docker_dev/.git
+        - /home/shared/:/home/docker_dev/shared/ 
+
     # command: python /home/docker_dev/silvr/train.py
 

@@ -31,16 +31,29 @@ ARG CUDA_ARCHITECTURES=90;89;86;80;75
 ENV TCNN_CUDA_ARCHITECTURES=${CUDA_ARCHITECTURES}
 RUN python -m pip install --no-cache-dir git+https://github.com/NVlabs/tiny-cuda-nn.git@v1.6#subdirectory=bindings/torch
 
-ARG GID
-ARG UID
+# ARG GID
+# ARG UID
+# ENV UNAME=docker_dev
+# RUN addgroup --gid $GID $UNAME
+# RUN adduser --disabled-password --gecos '' --uid $UID --gid $GID $UNAME
+ARG GID=1007
+ARG UID=1007
 ENV UNAME=docker_dev
 RUN addgroup --gid $GID $UNAME
 RUN adduser --disabled-password --gecos '' --uid $UID --gid $GID $UNAME
 
+# Add additional groups and assign the user to them
+RUN groupadd -g 998 docker && \
+    groupadd -g 1013 oxford_spires && \
+    groupadd -g 1014 nerfstudio && \
+    usermod -aG docker,oxford_spires,nerfstudio ${UNAME}
+    
 ARG LERF_DIR=/home/docker_dev/lerf
 WORKDIR ${LERF_DIR}
-
+# Ensure tyro is installed with the correct version before other dependencies
+RUN python -m pip install --no-cache-dir "tyro==0.6.6"
 COPY ./requirements.txt ${LERF_DIR}/requirements.txt
+# Ensure tyro is not overridden by requirements.txt
 RUN pip install -r requirements.txt
 COPY ./lerf/ ${LERF_DIR}/lerf
 COPY ./pyproject.toml ${LERF_DIR}/pyproject.toml
